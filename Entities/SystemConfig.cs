@@ -2,8 +2,8 @@
 {
     public class SystemConfig
     {
-        public string CurrentVersion { get; set; } = "1.0.0";
-        public string LastKnownGoodVersion { get; set; } = "0.0.0"; 
+        public Version CurrentVersion { get; set; } = new Version(1, 0, 0);
+        public Version LastKnownGoodVersion { get; set; } = new Version(0, 0, 0);
         public string TimeZone { get; set; } = "UTC";
         public bool NtpEnabled { get; set; } = true;
     }

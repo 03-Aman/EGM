@@ -5,8 +5,8 @@ namespace EGM.Core.Enums
     {
         IDLE,           // Default state
         RUNNING,        // Game is active
-        MAINTENANCE,    // Door open or hardware failure [cite: 37, 46]
-        UPDATING,       // Installing package [cite: 72]
-        ERROR           // Generic error state [cite: 73]
+        MAINTENANCE,    // Door open or hardware failure
+        UPDATING,       // Installing package
+        ERROR           // Generic error state
     }
 }
