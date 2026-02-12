@@ -1,6 +1,6 @@
 ﻿using EGM.Core.Entities;
 
-namespace EGM.Core.InterFaces
+namespace EGM.Core.Interfaces
 {
     public interface IConfigManager
     {

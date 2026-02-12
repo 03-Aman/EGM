@@ -1,7 +1,7 @@
-﻿using EGM.Core.InterFaces;
-using EGM.Core.Enums; // Added namespace
-using System;
+﻿using System;
 using System.IO;
+using EGM.Core.Interfaces;
+using EGM.Core.Enums; 
 
 namespace EGM.Core.Services
 {

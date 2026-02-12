@@ -1,9 +1,9 @@
-﻿using EGM.Core.InterFaces;
-using EGM.Core.Entities;
-using EGM.Core.Enums;
-using System;
+﻿using System;
 using System.IO;
 using System.Text.Json;
+using EGM.Core.Interfaces;
+using EGM.Core.Entities;
+using EGM.Core.Enums;
 
 namespace EGM.Core.Services
 {

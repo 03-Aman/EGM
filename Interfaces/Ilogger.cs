@@ -1,6 +1,6 @@
 ﻿using EGM.Core.Enums;
 
-namespace EGM.Core.InterFaces
+namespace EGM.Core.Interfaces
 {
     public interface ILogger
     {
