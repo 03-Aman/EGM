@@ -39,7 +39,7 @@ namespace EGM.Core.Services
             if (!_isSimulatedFailure)
             {
                 _ackReceived = true;
-                _logger.Log(LogType.Info, "Bill Validator ACK received."); // Optional: verify it works
+                _logger.Log(LogType.Info, "Bill Validator ACK received."); 
             }
             else
             {

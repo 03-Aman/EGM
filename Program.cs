@@ -1,30 +1,35 @@
 ﻿using EGM.Core.Enums;
 using EGM.Core.Interfaces;
+using EGM.Core.Persistence;
 using EGM.Core.Services;
+using EGM.Core.Validators;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 
-    // Setup DI Container
-    using var host = Host.CreateDefaultBuilder() .ConfigureServices((context, services) =>
-        {
-            services.AddSingleton<ILogger, LoggerService>();
-            services.AddSingleton<IConfigManager, ConfigManager>();
-            services.AddSingleton<IStateManager, StateManager>();
-            services.AddSingleton<IBillValidator, BillValidatorService>();
-            services.AddSingleton<IUpdateManager, UpdateManager>();        
-        })
-        .Build();
+// Setup DI Container
+using var host = Host.CreateDefaultBuilder(args).ConfigureServices((context, services) =>
+   {
+       services.AddSingleton<ILogger, LoggerService>();
+       services.AddSingleton<IConfigManager, ConfigManager>();
+       services.AddSingleton<IInstallHistoryStore, InstallHistoryStore>();
+       services.AddSingleton<IStateManager, StateManager>();
+       services.AddSingleton<IBillValidator, BillValidatorService>();
+       services.AddSingleton<IPackageValidator, PackageValidator>();
+       services.AddSingleton<ITimeZoneValidator, TimeZoneValidator>();
+       services.AddSingleton<IUpdateManager, UpdateManager>();
+   }).Build();
 
-    //  Resolve Services
-    var logger = host.Services.GetRequiredService<ILogger>();
+//  Resolve Services
+var logger = host.Services.GetRequiredService<ILogger>();
     var stateManager = host.Services.GetRequiredService<IStateManager>();
     var billValidator = host.Services.GetRequiredService<IBillValidator>();
     var updateManager = host.Services.GetRequiredService<IUpdateManager>();
     var configManager = host.Services.GetRequiredService<IConfigManager>();
+    var timeZoneValidator = host.Services.GetRequiredService<ITimeZoneValidator>();
 
-    //  Start System
-    billValidator.Start();
+//  Start System
+billValidator.Start();
 
 stateManager.OnStateChanged += (newState) =>
 {
@@ -109,11 +114,16 @@ logger.Log(LogType.Info, "EGM Core Module Ready. Type 'help' for commands.");
                     if (parts.Length >= 3 && parts[1] == "set-timezone")
                     {
                         string newZone = parts[2];
+                    if (timeZoneValidator.ValidateTimeZone(newZone, out string errorMessage)){
                         string oldZone = configManager.GetConfig().TimeZone;
 
                         configManager.UpdateConfig(c => c.TimeZone = newZone);
                         logger.Audit("Operator", "Set Timezone", oldZone, newZone); 
                     }
+                    else{ 
+                        logger.Log(LogType.Error, $"Timezone Update Failed: {errorMessage}"); 
+                    }
+                }
                     break;
 
                 default:

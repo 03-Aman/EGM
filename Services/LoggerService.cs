@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
 using EGM.Core.Interfaces;
-using EGM.Core.Enums; 
+using EGM.Core.Enums;
+using EGM.Core.Infrastructure;
 
 namespace EGM.Core.Services
 {
@@ -13,8 +14,7 @@ namespace EGM.Core.Services
         private const long _maxLogSizeBytes = 5 * 1024 * 1024;
         public LoggerService()
         {
-            string dataDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
-            Directory.CreateDirectory(dataDir);
+            string dataDir = AppPaths.DataDirectory;
             _logFilePath = Path.Combine(dataDir, "system.log");
             _errorLogFilePath = Path.Combine(dataDir, "system.err");
         }
@@ -83,7 +83,7 @@ namespace EGM.Core.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[CRITICAL] Failed to rotate log: {ex.Message}");
+               LogWithFallback($"Failed to rotate log file", ex.Message);
             }
         }
 
@@ -97,7 +97,7 @@ namespace EGM.Core.Services
                     $"[{timestamp}] [LOGGER-FAILURE] Failed to write log entry.\n" +
                     $"Original Message: {originalMessage}\n" +
                     $"Exception: {message}\n";
-
+                Console.WriteLine($"[CRITICAL] {fallbackEntry}");
                 File.AppendAllText(_errorLogFilePath, fallbackEntry + Environment.NewLine);
             }
             catch

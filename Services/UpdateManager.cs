@@ -1,79 +1,101 @@
-﻿using System;
-using System.Threading;
-using EGM.Core.Interfaces;
-using EGM.Core.Entities;
+﻿using EGM.Core.Interfaces;
 using EGM.Core.Enums;
+using System.Diagnostics.Eventing.Reader;
 
 namespace EGM.Core.Services
 {
     public class UpdateManager : IUpdateManager
     {
-        private readonly IConfigManager _configManager;
-        private readonly IStateManager _stateManager;
+        private readonly IConfigManager _config;
+        private readonly IStateManager _state;
         private readonly ILogger _logger;
+        private readonly IPackageValidator _packageValidator;
+        private readonly IInstallHistoryStore _history;
 
-        public UpdateManager(IConfigManager configManager, IStateManager stateManager, ILogger logger)
+        public UpdateManager( IConfigManager config, IStateManager state,ILogger logger,IPackageValidator validator, IInstallHistoryStore history)
         {
-            _configManager = configManager;
-            _stateManager = stateManager;
+            _config = config;
+            _state = state;
             _logger = logger;
+            _packageValidator = validator;
+            _history = history;
         }
 
         public void InstallPackage(string packagePath)
         {
-            _logger.Log(LogType.Info, $"[Update] Starting install for package: {packagePath}");
+            _logger.Log(LogType.Info, $"[Update] Starting install: {packagePath}");
 
-            //  Validate State (Must be IDLE to update)
-            if (!_stateManager.TransitionTo(EGMStateEnum.UPDATING, "User initiated update"))
+            if (!_state.TransitionTo(EGMStateEnum.UPDATING, "User initiated update"))
             {
-                _logger.Log(LogType.Error, "[Update] Cancelled. System must be IDLE.");
+                _logger.Log(LogType.Warning, "[Update] System must be IDLE.");
                 return;
             }
 
-            try
+            Version previousVersion = _config.GetConfig().CurrentVersion;
+            if (!_packageValidator.TryValidateAndExtractVersion(packagePath, previousVersion, out Version newVersion, out string erroMessage))
             {
-                // backup snapshot
-                var currentConfig = _configManager.GetConfig();
-                Version backupVersion = currentConfig.CurrentVersion;
-
-                _logger.Log(LogType.Info,
-                    $"[Update] Backup created. Last Known Good: {backupVersion}");
-
-                // Simulate Pre-Install Script
-                _logger.Log(LogType.Info, "[Update] Running pre-install script...");
-                Thread.Sleep(1000);
-
-                // --- SIMULATION LOGIC ---
-                if (packagePath.Contains("bad", StringComparison.OrdinalIgnoreCase))
-                {
-                    throw new Exception("Pre-install script failed (Simulated Error).");
-                }
-
-                // Increment PATCH version
-                var currentVersion = currentConfig.CurrentVersion;
-
-                Version newVersion = new Version( currentVersion.Major, currentVersion.Minor, currentVersion.Build + 1);
-
-                _configManager.UpdateConfig(c =>
-                {
-                    c.LastKnownGoodVersion = backupVersion;
-                    c.CurrentVersion = newVersion;
-                });
-
-                _logger.Log(LogType.Info, $"[Update] Success! New Version: {newVersion}");
-                _stateManager.TransitionTo(EGMStateEnum.IDLE, "Update Complete");
-
+                _logger.Log(LogType.Error, $"[Update] Package validation failed: {erroMessage}");
+                _state.TransitionTo(EGMStateEnum.IDLE, "Validation failed");
             }
-            catch (Exception ex)
+            else
             {
-              // ROLLBACK LOGIC 
-                _logger.Log(LogType.Error, $"[Update] Install Failed: {ex.Message}");
-                _logger.Log(LogType.Warning, "[Update] Initiating ROLLBACK...");
+                try
+                {
 
-                // Restore old version
-                _logger.Log(LogType.Info, $"[Update] Rollback successful. Version remains: {_configManager.GetConfig().CurrentVersion}");
-                _stateManager.TransitionTo(EGMStateEnum.IDLE, "Update Rolled Back");
+                    _logger.Log(LogType.Info, $"[Update] Valid package. Target version: {newVersion}");
+
+                    RunPreInstallHook(packagePath);
+
+                    // Commit update
+                    _config.UpdateConfig(c =>
+                    {
+                        c.LastKnownGoodVersion = previousVersion;
+                        c.CurrentVersion = newVersion;
+                    });
+
+                    // Record history separately
+                    _history.RecordInstall(previousVersion, newVersion);
+
+                    _logger.Log(LogType.Info, $"[Update] Success. Version updated to {newVersion}");
+
+                    _state.TransitionTo(EGMStateEnum.IDLE, "Update complete");
+                }
+                catch (Exception ex)
+                {
+                    _logger.Log(LogType.Error, $"[Update] Install failed: {ex.Message}");
+
+                    PerformRollback(previousVersion);
+
+                    _state.TransitionTo(EGMStateEnum.IDLE, "Rollback complete");
+                }
             }
         }
+
+
+        private void RunPreInstallHook(string packagePath)
+        {
+            _logger.Log(LogType.Info, "[Update] Running pre-install script...");
+
+            // Simulated execution delay
+            Thread.Sleep(1000);
+
+            if (packagePath.Contains("bad",StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException("Pre-install script failed.");
+            }
+        }
+
+        private void PerformRollback(Version previousVersion)
+        {
+            _logger.Log(LogType.Warning, $"[Update] Rolling back to {previousVersion}");
+            _history.RecordRollback(previousVersion);
+
+            _config.UpdateConfig(c =>
+            {
+                c.CurrentVersion = previousVersion;
+            });
+        }
+
     }
+
 }

@@ -1,9 +1,10 @@
-﻿using System;
+﻿using EGM.Core.Entities;
+using EGM.Core.Enums;
+using EGM.Core.Infrastructure;
+using EGM.Core.Interfaces;
+using System;
 using System.IO;
 using System.Text.Json;
-using EGM.Core.Interfaces;
-using EGM.Core.Entities;
-using EGM.Core.Enums;
 
 namespace EGM.Core.Services
 {
@@ -13,15 +14,13 @@ namespace EGM.Core.Services
         private readonly ILogger _logger;
         private SystemConfig _config = new();
         private readonly Lock _lock = new();
-        private static readonly JsonSerializerOptions _jsonOptions =
-    new JsonSerializerOptions { WriteIndented = true };
+        private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions { WriteIndented = true };
 
 
         public ConfigManager(ILogger logger)
         {
             _logger = logger;
-            string dataDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
-            Directory.CreateDirectory(dataDir);
+            string dataDir = AppPaths.DataDirectory;
             _configPath = Path.Combine(dataDir, "config.json");
             LoadConfig();
         }
