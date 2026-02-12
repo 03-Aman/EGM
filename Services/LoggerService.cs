@@ -14,12 +14,12 @@ namespace EGM.Core.Services
         private const long _maxLogSizeBytes = 5 * 1024 * 1024;
         public LoggerService()
         {
-            string dataDir = AppPaths.DataDirectory;
+            string dataDir = FileFunctions.DataDirectory;
             _logFilePath = Path.Combine(dataDir, "system.log");
             _errorLogFilePath = Path.Combine(dataDir, "system.err");
         }
 
-        public void Log(LogType logType, string message)
+        public void Log(LogTypeEnum logType, string message)
         {
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             string entry = $"[{timestamp}] [{logType.ToString().ToUpper()}] {message}";
@@ -27,8 +27,8 @@ namespace EGM.Core.Services
             var originalColor = Console.ForegroundColor;
             Console.ForegroundColor = logType switch
             {
-                LogType.Error => ConsoleColor.Red,
-                LogType.Warning => ConsoleColor.Yellow,
+                LogTypeEnum.Error => ConsoleColor.Red,
+                LogTypeEnum.Warning => ConsoleColor.Yellow,
                 _ => ConsoleColor.White
             };
             Console.WriteLine(entry);

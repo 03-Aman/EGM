@@ -30,14 +30,14 @@ namespace EGM.Core.Services
                 // Check if we are already in the requested state
                 if (_currentState == newState)
                 {
-                    _logger.Log(LogType.Warning, $"Transition ignored: Already in {newState}.");
+                    _logger.Log(LogTypeEnum.Warning, $"Transition ignored: Already in {newState}.");
                     return true;
                 }
 
                 //  Validate Transition Rules
                 if (!IsValidTransition(_currentState, newState))
                 {
-                    _logger.Log(LogType.Warning, $"Invalid Transition: Cannot go from {_currentState} to {newState}. Reason: {reason}");
+                    _logger.Log(LogTypeEnum.Warning, $"Invalid Transition: Cannot go from {_currentState} to {newState}. Reason: {reason}");
                     return false;
                 }
 
@@ -51,7 +51,7 @@ namespace EGM.Core.Services
         {
             lock (_lock)
             {
-                _logger.Log(LogType.Warning, $"[FORCE] Forcing state to {newState}. Reason: {reason}");
+                _logger.Log(LogTypeEnum.Warning, $"[FORCE] Forcing state to {newState}. Reason: {reason}");
                 PerformTransition(newState, reason);
             }
         }
@@ -61,7 +61,7 @@ namespace EGM.Core.Services
             var oldState = _currentState;
             _currentState = newState;
 
-            _logger.Log(LogType.Info, $"State Changed: {oldState} -> {newState} | Reason: {reason}");
+            _logger.Log(LogTypeEnum.Info, $"State Changed: {oldState} -> {newState} | Reason: {reason}");
 
             // Notify subscribers (like the Game Loop or Hardware Monitor)
             OnStateChanged?.Invoke(newState);

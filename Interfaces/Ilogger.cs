@@ -4,7 +4,7 @@ namespace EGM.Core.Interfaces
 {
     public interface ILogger
     {
-        void Log(LogType type, string message);
+        void Log(LogTypeEnum type, string message);
         void Audit(string actor, string action, string oldValue, string newValue);
     }
 }

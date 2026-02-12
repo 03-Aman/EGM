@@ -49,7 +49,7 @@ stateManager.OnStateChanged += (newState) =>
     Console.ForegroundColor = originalColor;
 };
 
-logger.Log(LogType.Info, "EGM Core Module Ready. Type 'help' for commands.");
+logger.Log(LogTypeEnum.Info, "EGM Core Module Ready. Type 'help' for commands.");
 
     //  The Command Loop
     while (true)
@@ -96,7 +96,7 @@ logger.Log(LogType.Info, "EGM Core Module Ready. Type 'help' for commands.");
 
                 case "update-package":
                     if (parts.Length > 1) updateManager.InstallPackage(parts[1].Trim('"'));
-                    else logger.Log(LogType.Warning, "Usage: update-package <filename>");
+                    else logger.Log(LogTypeEnum.Warning, "Usage: update-package <filename>");
                     break;
 
                 case "device":
@@ -121,7 +121,7 @@ logger.Log(LogType.Info, "EGM Core Module Ready. Type 'help' for commands.");
                         logger.Audit("Operator", "Set Timezone", oldZone, newZone); 
                     }
                     else{ 
-                        logger.Log(LogType.Error, $"Timezone Update Failed: {errorMessage}"); 
+                        logger.Log(LogTypeEnum.Error, $"Timezone Update Failed: {errorMessage}"); 
                     }
                 }
                     break;
@@ -133,6 +133,6 @@ logger.Log(LogType.Info, "EGM Core Module Ready. Type 'help' for commands.");
         }
         catch (Exception ex)
         {
-            logger.Log(LogType.Error, $"Command Error: {ex.Message}");
+            logger.Log(LogTypeEnum.Error, $"Command Error: {ex.Message}");
         }
     }

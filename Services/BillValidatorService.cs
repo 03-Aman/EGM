@@ -23,7 +23,7 @@ namespace EGM.Core.Services
 
         public void Start()
         {
-            _logger.Log(LogType.Info, "Bill Validator Service Started.");
+            _logger.Log(LogTypeEnum.Info, "Bill Validator Service Started.");
             // Start the timer to run 'PingLoop' every 10 seconds
             _heartbeatTimer = new Timer(PingLoop, null, 0, PingIntervalMs);
         }
@@ -39,11 +39,11 @@ namespace EGM.Core.Services
             if (!_isSimulatedFailure)
             {
                 _ackReceived = true;
-                _logger.Log(LogType.Info, "Bill Validator ACK received."); 
+                _logger.Log(LogTypeEnum.Info, "Bill Validator ACK received."); 
             }
             else
             {
-                _logger.Log(LogType.Warning, "Bill Validator ACK ignored (Simulated Failure Active).");
+                _logger.Log(LogTypeEnum.Warning, "Bill Validator ACK ignored (Simulated Failure Active).");
             }
         }
 
@@ -51,7 +51,7 @@ namespace EGM.Core.Services
         {
             _isSimulatedFailure = shouldFail;
             string status = shouldFail ? "BROKEN (No ACKs)" : "WORKING";
-            _logger.Log(LogType.Warning, $"Bill Validator simulation set to: {status}");
+            _logger.Log(LogTypeEnum.Warning, $"Bill Validator simulation set to: {status}");
         }
 
         // This runs on a background thread every 10s
@@ -61,7 +61,7 @@ namespace EGM.Core.Services
             _ackReceived = false;
 
             // Log the Ping
-            _logger.Log(LogType.Info, "[Hardware] Pinging Bill Validator...");
+            _logger.Log(LogTypeEnum.Info, "[Hardware] Pinging Bill Validator...");
 
             //    Simulate automatic ACK (In a real scenario, hardware does this. 
             //    Here, we assume it works unless 'SetSimulatedFailure' is true).
@@ -81,7 +81,7 @@ namespace EGM.Core.Services
         {
             if (!_ackReceived)
             {
-                _logger.Log(LogType.Error, "[Hardware] Bill Validator Timeout! No ACK received.");
+                _logger.Log(LogTypeEnum.Error, "[Hardware] Bill Validator Timeout! No ACK received.");
 
                 // CRITICAL: Transition to MAINTENANCE
                 _stateManager.ForceState(EGMStateEnum.MAINTENANCE, "Bill Validator Hardware Failure");

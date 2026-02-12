@@ -23,18 +23,18 @@ namespace EGM.Core.Services
 
         public void InstallPackage(string packagePath)
         {
-            _logger.Log(LogType.Info, $"[Update] Starting install: {packagePath}");
+            _logger.Log(LogTypeEnum.Info, $"[Update] Starting install: {packagePath}");
 
             if (!_state.TransitionTo(EGMStateEnum.UPDATING, "User initiated update"))
             {
-                _logger.Log(LogType.Warning, "[Update] System must be IDLE.");
+                _logger.Log(LogTypeEnum.Warning, "[Update] System must be IDLE.");
                 return;
             }
 
             Version previousVersion = _config.GetConfig().CurrentVersion;
             if (!_packageValidator.TryValidateAndExtractVersion(packagePath, previousVersion, out Version newVersion, out string erroMessage))
             {
-                _logger.Log(LogType.Error, $"[Update] Package validation failed: {erroMessage}");
+                _logger.Log(LogTypeEnum.Error, $"[Update] Package validation failed: {erroMessage}");
                 _state.TransitionTo(EGMStateEnum.IDLE, "Validation failed");
             }
             else
@@ -42,7 +42,7 @@ namespace EGM.Core.Services
                 try
                 {
 
-                    _logger.Log(LogType.Info, $"[Update] Valid package. Target version: {newVersion}");
+                    _logger.Log(LogTypeEnum.Info, $"[Update] Valid package. Target version: {newVersion}");
 
                     RunPreInstallHook(packagePath);
 
@@ -56,13 +56,13 @@ namespace EGM.Core.Services
                     // Record history separately
                     _history.RecordInstall(previousVersion, newVersion);
 
-                    _logger.Log(LogType.Info, $"[Update] Success. Version updated to {newVersion}");
+                    _logger.Log(LogTypeEnum.Info, $"[Update] Success. Version updated to {newVersion}");
 
                     _state.TransitionTo(EGMStateEnum.IDLE, "Update complete");
                 }
                 catch (Exception ex)
                 {
-                    _logger.Log(LogType.Error, $"[Update] Install failed: {ex.Message}");
+                    _logger.Log(LogTypeEnum.Error, $"[Update] Install failed: {ex.Message}");
 
                     PerformRollback(previousVersion);
 
@@ -74,7 +74,7 @@ namespace EGM.Core.Services
 
         private void RunPreInstallHook(string packagePath)
         {
-            _logger.Log(LogType.Info, "[Update] Running pre-install script...");
+            _logger.Log(LogTypeEnum.Info, "[Update] Running pre-install script...");
 
             // Simulated execution delay
             Thread.Sleep(1000);
@@ -87,7 +87,7 @@ namespace EGM.Core.Services
 
         private void PerformRollback(Version previousVersion)
         {
-            _logger.Log(LogType.Warning, $"[Update] Rolling back to {previousVersion}");
+            _logger.Log(LogTypeEnum.Warning, $"[Update] Rolling back to {previousVersion}");
             _history.RecordRollback(previousVersion);
 
             _config.UpdateConfig(c =>

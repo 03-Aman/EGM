@@ -1,7 +1,7 @@
 ﻿
 namespace EGM.Core.Enums
 {
-    public enum LogType
+    public enum LogTypeEnum
     {
         Info,
         Warning,

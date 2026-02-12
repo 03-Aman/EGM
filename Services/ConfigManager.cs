@@ -20,7 +20,7 @@ namespace EGM.Core.Services
         public ConfigManager(ILogger logger)
         {
             _logger = logger;
-            string dataDir = AppPaths.DataDirectory;
+            string dataDir = FileFunctions.DataDirectory;
             _configPath = Path.Combine(dataDir, "config.json");
             LoadConfig();
         }
@@ -44,11 +44,11 @@ namespace EGM.Core.Services
                 {
                     string json = File.ReadAllText(_configPath);
                     _config = JsonSerializer.Deserialize<SystemConfig>(json) ?? new SystemConfig();
-                    _logger.Log(LogType.Info, "Configuration loaded.");
+                    _logger.Log(LogTypeEnum.Info, "Configuration loaded.");
                 }
                 catch (Exception ex)
                 {
-                    _logger.Log(LogType.Error, $"Config load failed: {ex.Message}");
+                    _logger.Log(LogTypeEnum.Error, $"Config load failed: {ex.Message}");
                     _config = new SystemConfig();
                 }
             }
@@ -61,16 +61,12 @@ namespace EGM.Core.Services
 
         private void SaveConfig()
         {
-            try
-            {
-                string json = JsonSerializer.Serialize(_config, _jsonOptions);
-                File.WriteAllText(_configPath, json);
-                _logger.Log(LogType.Info, "Configuration saved.");
-            }
-            catch (Exception ex)
-            {
-                _logger.Log(LogType.Error, $"Config save failed: {ex.Message}");
-            }
+            string json = JsonSerializer.Serialize(_config, _jsonOptions);
+
+            if(FileFunctions.TryWriteFile(_configPath, json, out string errorMessage))
+                _logger.Log(LogTypeEnum.Info, "Configuration saved.");
+            else
+                _logger.Log(LogTypeEnum.Error, $"Config save failed: {errorMessage}");
         }
     }
 }
