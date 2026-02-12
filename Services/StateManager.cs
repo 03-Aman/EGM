@@ -8,7 +8,7 @@ namespace EGM.Core.Services
     {
         private EGMStateEnum _currentState;
         private readonly ILogger _logger;
-        private readonly object _lock = new object(); // For thread safety
+        private readonly object _lock = new(); 
 
         public event Action<EGMStateEnum>? OnStateChanged;
 
@@ -27,21 +27,21 @@ namespace EGM.Core.Services
         {
             lock (_lock)
             {
-                // 1. Check if we are already in the requested state
+                // Check if we are already in the requested state
                 if (_currentState == newState)
                 {
-                    // _logger.Log(LogType.Warning, $"Transition ignored: Already in {newState}.");
+                    _logger.Log(LogType.Warning, $"Transition ignored: Already in {newState}.");
                     return true;
                 }
 
-                // 2. Validate Transition Rules
+                //  Validate Transition Rules
                 if (!IsValidTransition(_currentState, newState))
                 {
                     _logger.Log(LogType.Warning, $"Invalid Transition: Cannot go from {_currentState} to {newState}. Reason: {reason}");
                     return false;
                 }
 
-                // 3. Execute Transition
+                //  Execute Transition
                 PerformTransition(newState, reason);
                 return true;
             }
@@ -68,7 +68,7 @@ namespace EGM.Core.Services
         }
 
         // Centralized logic for allowable moves
-        private bool IsValidTransition(EGMStateEnum current, EGMStateEnum next)
+        private static bool IsValidTransition(EGMStateEnum current, EGMStateEnum next)
         {
            // MAINTENANCE/ERROR can come from ANYWHERE (Safety First) 
             if (next == EGMStateEnum.MAINTENANCE || next == EGMStateEnum.ERROR) return true;

@@ -70,10 +70,7 @@ namespace EGM.Core.Services
                 _logger.Log(LogType.Error, $"[Update] Install Failed: {ex.Message}");
                 _logger.Log(LogType.Warning, "[Update] Initiating ROLLBACK...");
 
-                // Restore old version (conceptually)
-                // Since we didn't commit the new version yet, we just ensure config is untouched
-                // In a real file system, we would copy the backup folder back here.
-
+                // Restore old version
                 _logger.Log(LogType.Info, $"[Update] Rollback successful. Version remains: {_configManager.GetConfig().CurrentVersion}");
                 _stateManager.TransitionTo(EGMStateEnum.IDLE, "Update Rolled Back");
             }

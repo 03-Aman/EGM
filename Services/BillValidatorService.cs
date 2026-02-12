@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using EGM.Core.Enums;
+﻿using EGM.Core.Enums;
 using EGM.Core.Interfaces;
 
 namespace EGM.Core.Services
@@ -68,7 +65,6 @@ namespace EGM.Core.Services
 
             //    Simulate automatic ACK (In a real scenario, hardware does this. 
             //    Here, we assume it works unless 'SetSimulatedFailure' is true).
-            //    *Strictly for the test, we can auto-ack here OR require the user to type it.*
             //    *The prompt implies the SYSTEM sends ping, Validator returns ACK.*
             //    *Let's simulate the DEVICE responding automatically after 500ms if not broken.*
 
