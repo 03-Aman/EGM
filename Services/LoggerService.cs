@@ -9,7 +9,7 @@ namespace EGM.Core.Services
     public class LoggerService : ILogger
     {
         private readonly string _logFilePath;
-        private readonly Lock _fileLock = new();
+        private readonly object _fileLock = new();
         private readonly string _errorLogFilePath;
         private const long _maxLogSizeBytes = 5 * 1024 * 1024;
         public LoggerService()

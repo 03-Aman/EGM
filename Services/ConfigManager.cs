@@ -13,7 +13,7 @@ namespace EGM.Core.Services
         private readonly string _configPath;
         private readonly ILogger _logger;
         private SystemConfig _config = new();
-        private readonly Lock _lock = new();
+        private readonly object _lock = new();
         private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions { WriteIndented = true };
 
 
