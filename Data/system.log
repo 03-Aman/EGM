@@ -270,3 +270,96 @@
 [2026-02-13 14:09:26] [WARNING] [FORCE] Forcing state to MAINTENANCE. Reason: Bill Validator Hardware Failure
 [2026-02-13 14:09:26] [INFO] State Changed: MAINTENANCE -> MAINTENANCE | Reason: Bill Validator Hardware Failure
 [2026-02-13 14:09:34] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 14:39:44] [INFO] Configuration loaded.
+[2026-02-13 14:39:44] [INFO] Bill Validator Service Started.
+[2026-02-13 14:39:44] [INFO] EGM Core Module Ready. Type 'help' for commands.
+[2026-02-13 14:39:44] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 14:39:45] [INFO] Bill Validator ACK received.
+[2026-02-13 14:39:47] [INFO] [CLI] Command received: status
+[2026-02-13 14:39:54] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 14:39:55] [INFO] Bill Validator ACK received.
+[2026-02-13 14:40:02] [INFO] [CLI] Command received: help
+[2026-02-13 14:40:39] [INFO] Configuration loaded.
+[2026-02-13 14:40:39] [INFO] Bill Validator Service Started.
+[2026-02-13 14:40:39] [INFO] EGM Core Module Ready. Type 'help' for commands.
+[2026-02-13 14:40:39] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 14:40:40] [INFO] Bill Validator ACK received.
+[2026-02-13 14:40:41] [INFO] [CLI] Command received: status
+[2026-02-13 14:40:58] [INFO] Configuration loaded.
+[2026-02-13 14:40:58] [INFO] Bill Validator Service Started.
+[2026-02-13 14:40:58] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 14:40:58] [INFO] EGM Core Module Ready. Type 'help' for commands.
+[2026-02-13 14:40:59] [INFO] Bill Validator ACK received.
+[2026-02-13 14:41:00] [INFO] [CLI] Command received: status
+[2026-02-13 14:41:08] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 14:41:09] [INFO] Bill Validator ACK received.
+[2026-02-13 14:43:40] [INFO] Configuration loaded.
+[2026-02-13 14:43:40] [INFO] Bill Validator Service Started.
+[2026-02-13 14:43:40] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 14:43:40] [INFO] EGM Core Module Ready. Type 'help' for commands.
+[2026-02-13 14:43:41] [INFO] Bill Validator ACK received.
+[2026-02-13 14:43:42] [INFO] [CLI] Command received: status
+[2026-02-13 14:44:39] [INFO] Configuration loaded.
+[2026-02-13 14:44:39] [INFO] Bill Validator Service Started.
+[2026-02-13 14:44:39] [INFO] EGM Core Module Ready. Type 'help' for commands.
+[2026-02-13 14:44:39] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 14:44:39] [INFO] Bill Validator ACK received.
+[2026-02-13 14:44:49] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 14:44:49] [INFO] Bill Validator ACK received.
+[2026-02-13 14:44:59] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 14:44:59] [INFO] Bill Validator ACK received.
+[2026-02-13 14:45:01] [INFO] [CLI] Command received: device bill_validator ack off
+[2026-02-13 14:45:01] [WARNING] Bill Validator simulation set to: BROKEN (No ACKs)
+[2026-02-13 14:45:09] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 14:45:11] [ERROR] [Hardware] Bill Validator Timeout! No ACK received.
+[2026-02-13 14:45:11] [WARNING] [FORCE] Forcing state to MAINTENANCE. Reason: Bill Validator Hardware Failure
+[2026-02-13 14:45:11] [INFO] State Changed: IDLE -> MAINTENANCE | Reason: Bill Validator Hardware Failure
+[2026-02-13 14:45:19] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 14:45:21] [ERROR] [Hardware] Bill Validator Timeout! No ACK received.
+[2026-02-13 14:45:29] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 14:45:31] [ERROR] [Hardware] Bill Validator Timeout! No ACK received.
+[2026-02-13 14:45:39] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 14:53:24] [INFO] Configuration loaded.
+[2026-02-13 14:53:24] [INFO] Bill Validator Service Started.
+[2026-02-13 14:53:24] [INFO] EGM Core Module Ready. Type 'help' for commands.
+[2026-02-13 14:53:24] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 14:53:25] [INFO] Bill Validator ACK received.
+[2026-02-13 14:53:34] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 14:53:35] [INFO] Bill Validator ACK received.
+[2026-02-13 14:53:44] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 14:53:45] [INFO] Bill Validator ACK received.
+[2026-02-13 14:53:54] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 14:53:55] [INFO] Bill Validator ACK received.
+[2026-02-13 14:54:04] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 14:54:05] [INFO] Bill Validator ACK received.
+[2026-02-13 15:07:21] [INFO] Configuration loaded.
+[2026-02-13 15:07:21] [INFO] Bill Validator Service Started.
+[2026-02-13 15:07:21] [INFO] EGM Core Module Ready. Type 'help' for commands.
+[2026-02-13 15:07:21] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 15:07:21] [INFO] Bill Validator ACK received.
+[2026-02-13 15:07:31] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 15:07:31] [INFO] Bill Validator ACK received.
+[2026-02-13 15:07:33] [INFO] [CLI] Command received: update --package "E:\EGM.Core\Data\update_pkg_1.1.6.txt"
+[2026-02-13 15:07:33] [INFO] [Update] Starting installation for: "E:\EGM.Core\Data\update_pkg_1.1.6.txt"
+[2026-02-13 15:07:33] [INFO] State Changed: IDLE -> UPDATING | Reason: User initiated update
+[2026-02-13 15:07:33] [ERROR] [Update] Validation failed: Package file: "E:\EGM.Core\Data\update_pkg_1.1.6.txt", does not exist.
+[2026-02-13 15:07:33] [INFO] State Changed: UPDATING -> IDLE | Reason: Update validation failed
+[2026-02-13 15:07:41] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 15:08:15] [INFO] Configuration loaded.
+[2026-02-13 15:08:15] [INFO] Bill Validator Service Started.
+[2026-02-13 15:08:15] [INFO] EGM Core Module Ready. Type 'help' for commands.
+[2026-02-13 15:08:15] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 15:08:16] [INFO] Bill Validator ACK received.
+[2026-02-13 15:08:17] [INFO] [CLI] Command received: update --package "E:\EGM.Core\Data\update_pkg_1.1.6.txt"
+[2026-02-13 15:08:17] [INFO] [Update] Starting installation for: E:\EGM.Core\Data\update_pkg_1.1.6.txt
+[2026-02-13 15:08:17] [INFO] State Changed: IDLE -> UPDATING | Reason: User initiated update
+[2026-02-13 15:08:17] [INFO] [Update] Package validated. Target version: 1.1.6
+[2026-02-13 15:08:17] [INFO] [Update] Running pre-install script...
+[2026-02-13 15:08:19] [INFO] Configuration saved.
+[2026-02-13 15:08:19] [INFO] [Update] Installation successful. Active version: 1.1.6
+[2026-02-13 15:08:19] [INFO] State Changed: UPDATING -> IDLE | Reason: Update completed successfully
+[2026-02-13 15:08:25] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 15:08:26] [INFO] Bill Validator ACK received.
+[2026-02-13 15:08:35] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 15:08:36] [INFO] Bill Validator ACK received.
+[2026-02-13 15:08:38] [INFO] [CLI] Command received: status

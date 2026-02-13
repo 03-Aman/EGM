@@ -7,15 +7,16 @@ namespace EGM.Core.Services
     {
         private readonly ILogger _logger;
         private readonly IStateManager _stateManager;
-        private Timer ?_heartbeatTimer;
-        private bool _ackReceived;
+
+        private Timer? _heartbeatTimer;
+        private volatile bool _ackReceived;
         private bool _isSimulatedFailure;
+        private bool _isRunning;
 
-        // Configuration constants
-        private const int PingIntervalMs = 10000; // 10 seconds 
-        private const int TimeoutMs = 2000;       // 2 seconds 
+        private const int PingIntervalMs = 10000;
+        private const int TimeoutMs = 2000;
 
-        public BillValidatorService(ILogger logger, IStateManager stateManager)
+        public BillValidatorService( ILogger logger, IStateManager stateManager)
         {
             _logger = logger;
             _stateManager = stateManager;
@@ -23,75 +24,86 @@ namespace EGM.Core.Services
 
         public void Start()
         {
+            if (_isRunning) return;
+
+            _isRunning = true;
             _logger.Log(LogTypeEnum.Info, "Bill Validator Service Started.");
-            // Start the timer to run 'PingLoop' every 10 seconds
-            _heartbeatTimer = new Timer(PingLoop, null, 0, PingIntervalMs);
+
+            _heartbeatTimer = new Timer(async _ => await PingLoop(), null,0,PingIntervalMs);
         }
 
         public void Stop()
         {
+            _isRunning = false;
             _heartbeatTimer?.Change(Timeout.Infinite, 0);
+            _heartbeatTimer?.Dispose();
         }
 
         public void ReceiveAck()
         {
-            // Only accept ACK if we aren't simulating a broken wire
-            if (!_isSimulatedFailure)
+            if (_isSimulatedFailure)
             {
-                _ackReceived = true;
-                _logger.Log(LogTypeEnum.Info, "Bill Validator ACK received."); 
+                _logger.Log(LogTypeEnum.Warning,"Bill Validator ACK ignored (Simulated Failure Active).");
+                return;
             }
-            else
-            {
-                _logger.Log(LogTypeEnum.Warning, "Bill Validator ACK ignored (Simulated Failure Active).");
-            }
+
+            _ackReceived = true;
+            _logger.Log(LogTypeEnum.Info, "Bill Validator ACK received.");
         }
 
         public void SetSimulatedFailure(bool shouldFail)
         {
             _isSimulatedFailure = shouldFail;
-            string status = shouldFail ? "BROKEN (No ACKs)" : "WORKING";
-            _logger.Log(LogTypeEnum.Warning, $"Bill Validator simulation set to: {status}");
+
+            string status = shouldFail ? "BROKEN (No ACKs)": "WORKING";
+
+            _logger.Log(LogTypeEnum.Warning,$"Bill Validator simulation set to: {status}");
         }
 
-        // This runs on a background thread every 10s
-        private void PingLoop(object state)
+        private async Task PingLoop()
         {
-            //  Reset ACK flag for this new cycle
+            if (!_isRunning)
+                return;
+
             _ackReceived = false;
 
-            // Log the Ping
-            _logger.Log(LogTypeEnum.Info, "[Hardware] Pinging Bill Validator...");
+            _logger.Log(LogTypeEnum.Info,"[Hardware] Pinging Bill Validator...");
 
-            //    Simulate automatic ACK (In a real scenario, hardware does this. 
-            //    Here, we assume it works unless 'SetSimulatedFailure' is true).
-            //    *The prompt implies the SYSTEM sends ping, Validator returns ACK.*
-            //    * simulate the DEVICE responding automatically after 500ms if not broken.*
-
-            Task.Delay(500).ContinueWith(_ =>
+            try
             {
-                if (!_isSimulatedFailure) ReceiveAck();
-            });
+                if (!_isSimulatedFailure)
+                {
+                    await Task.Delay(500);
+                    ReceiveAck();
+                }
 
-            //  Wait for the Timeout window (2s) to check result
-            Task.Delay(TimeoutMs).ContinueWith(_ => CheckForAck());
+                await Task.Delay(TimeoutMs);
+
+                CheckForAck();
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogTypeEnum.Error,$"Bill Validator internal error: {ex.Message}");
+            }
         }
 
         private void CheckForAck()
         {
-            if (!_ackReceived)
-            {
-                _logger.Log(LogTypeEnum.Error, "[Hardware] Bill Validator Timeout! No ACK received.");
+            if (_ackReceived)
+                return;
 
-                // CRITICAL: Transition to MAINTENANCE
-                if(_stateManager.CurrentState != EGMStateEnum.MAINTENANCE)
-                    _stateManager.ForceState(EGMStateEnum.MAINTENANCE, "Bill Validator Hardware Failure");
+            _logger.Log(LogTypeEnum.Error, "[Hardware] Bill Validator Timeout! No ACK received.");
+
+            // Idempotent state transition
+            if (_stateManager.CurrentState != EGMStateEnum.MAINTENANCE)
+            {
+                _stateManager.ForceState(EGMStateEnum.MAINTENANCE, "Bill Validator Hardware Failure");
             }
         }
 
         public void Dispose()
         {
-            _heartbeatTimer?.Dispose();
+            Stop();
         }
     }
 }
