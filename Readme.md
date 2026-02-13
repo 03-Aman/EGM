@@ -59,7 +59,7 @@ EGM> start_game
 ```
 Output:
 
-![alt text](images/start_game.png)
+![alt text](Images/start_game.png)
 ### **Step 2: Door Open Signal (Behavior #2)**
 Simulate a security event that forces the game to stop.
 
@@ -68,7 +68,7 @@ EGM> signal door_open
 ```
 Output:
 
-![alt text](images/door_open.png)
+![alt text](Images/door_open.png)
 Verification: Type status to confirm State is now MAINTENANCE.
 
 Action: Reset the system to IDLE to continue testing:
@@ -85,7 +85,7 @@ Change a configuration setting and verify the audit log.
 ```text
 EGM> os set-timezone "India Standard Time"/"Eastern Standard Time"
 ```
-![alt text](images/OS.png)
+![alt text](Images/OS.png)
 
 ### **Step 4: Bill Validator Keep-Alive (Behavior #3)**
 Simulate a hardware failure. The system pings every 10 seconds.
@@ -94,7 +94,7 @@ Simulate a hardware failure. The system pings every 10 seconds.
 EGM> device bill_validator ack off
 ```
 Output:
-![alt text](images/bill_simulation.png)
+![alt text](Images/bill_simulation.png)
 
 ### **Step 5: Update with Rollback (Behavior #1)**
 Test a successful update and a failed update (triggering rollback).
@@ -105,7 +105,7 @@ EGM> update --package "..\..\..\Logs\update_pkg_2.0.0.txt"
 (Note: Adjust the path if your Logs folder is in a different location relative to the executable)
 ```
 Output:
-![alt text](images/successfull_package_update.png)
+![alt text](Images/successfull_package_update.png)
 
 ### B. Failed Update (Rollback)
 The system is programmed to fail any package containing the word "bad" in the filename.
@@ -115,7 +115,7 @@ EGM> update --package "..\..\..\Logs\update_pkg_bad_3.0.0.txt"
 
 Output:
 
-![alt text](images/failed_update.png)
+![alt text](Images/failed_update.png)
 
 ## Log Files
 ### All events are persisted to disk. You can view them in the Logs directory:
