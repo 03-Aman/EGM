@@ -11,7 +11,11 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.3" />
   </ItemGroup>
-
+  <ItemGroup>
+    <Compile Remove="EGM.Core.Tests\**" />
+    <EmbeddedResource Remove="EGM.Core.Tests\**" />
+    <None Remove="EGM.Core.Tests\**" />
+  </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
   </ItemGroup>

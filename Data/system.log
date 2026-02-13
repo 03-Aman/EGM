@@ -428,3 +428,8 @@
 [2026-02-13 16:02:55] [INFO] State Changed: RUNNING -> IDLE | Reason: Operator stopped game
 [2026-02-13 16:02:57] [INFO] [Hardware] Pinging Bill Validator...
 [2026-02-13 16:02:58] [INFO] Bill Validator ACK received.
+[2026-02-13 16:27:32] [INFO] Configuration loaded.
+[2026-02-13 16:27:32] [INFO] Bill Validator Service Started.
+[2026-02-13 16:27:32] [INFO] EGM Core Module Ready. Type 'help' for commands.
+[2026-02-13 16:27:32] [INFO] [Hardware] Pinging Bill Validator...
+[2026-02-13 16:27:33] [INFO] Bill Validator ACK received.

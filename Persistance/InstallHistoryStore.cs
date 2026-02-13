@@ -53,7 +53,7 @@ namespace EGM.Core.Persistence
                 }
                 catch (JsonException ex)
                 {
-                    _logger.Log(LogTypeEnum.Error, "Install history file is corrupted.");
+                    _logger.Log(LogTypeEnum.Error, $"Install history file is corrupted.: {ex.Message}");
                     return [];
                 }
             }
