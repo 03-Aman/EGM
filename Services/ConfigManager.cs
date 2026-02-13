@@ -20,7 +20,7 @@ namespace EGM.Core.Services
         public ConfigManager(ILogger logger)
         {
             _logger = logger;
-            string dataDir = FileFunctions.DataDirectory;
+            string dataDir = FileFunctions.LogDirectory;
             _configPath = Path.Combine(dataDir, "config.json");
             LoadConfig();
         }

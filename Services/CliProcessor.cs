@@ -157,7 +157,7 @@ namespace EGM.Core.Services
             if (parts.Length >= 3 &&
                 parts[1].Equals("set-timezone", StringComparison.OrdinalIgnoreCase))
             {
-                var newZone = parts[2];
+                var newZone = string.Join(" ", parts.Skip(2)).Trim('"');
 
                 if (_timeZoneValidator.ValidateTimeZone(newZone, out string error))
                 {

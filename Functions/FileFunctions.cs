@@ -2,7 +2,7 @@
 {
     public static class FileFunctions
     {
-        public static string DataDirectory
+        public static string LogDirectory
         {
             get
             {
@@ -11,7 +11,7 @@
                 string projectRoot = Path.GetFullPath(
                     Path.Combine(basePath, "..", "..", ".."));
 
-                string dataPath = Path.Combine(projectRoot, "Data");
+                string dataPath = Path.Combine(projectRoot, "Logs");
 
                 Directory.CreateDirectory(dataPath);
 

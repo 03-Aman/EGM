@@ -15,7 +15,7 @@ namespace EGM.Core.Persistence
 
         public InstallHistoryStore(ILogger logger)
         {
-            string dataDir = FileFunctions.DataDirectory;
+            string dataDir = FileFunctions.LogDirectory;
             _filePath = Path.Combine(dataDir, "install_history.json");
             if (!File.Exists(_filePath))
                 FileFunctions.TryWriteFile(_filePath, "[]", out _);

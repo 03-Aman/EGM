@@ -13,7 +13,7 @@ namespace EGM.Core.Validators
                 var zones = TimeZoneInfo.GetSystemTimeZones();
 
                 if (!zones.Any(z => z.Id.Equals(timeZone, StringComparison.OrdinalIgnoreCase)))
-                    errorMessage = "Invalid timezone.";
+                    errorMessage = $"Invalid timezone: {timeZone}";
             }
             return errorMessage == string.Empty;
         }
