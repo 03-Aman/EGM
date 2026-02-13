@@ -4,5 +4,11 @@
     "PreviousVersion": "1.0.0",
     "InstalledVersion": "1.1.4",
     "RolledBack": false
+  },
+  {
+    "TimestampUtc": "2026-02-13T08:36:49.9978862Z",
+    "PreviousVersion": "1.1.4",
+    "InstalledVersion": "1.1.5",
+    "RolledBack": false
   }
 ]

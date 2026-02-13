@@ -66,7 +66,7 @@ namespace EGM.Core.Services
             //    Simulate automatic ACK (In a real scenario, hardware does this. 
             //    Here, we assume it works unless 'SetSimulatedFailure' is true).
             //    *The prompt implies the SYSTEM sends ping, Validator returns ACK.*
-            //    *Let's simulate the DEVICE responding automatically after 500ms if not broken.*
+            //    * simulate the DEVICE responding automatically after 500ms if not broken.*
 
             Task.Delay(500).ContinueWith(_ =>
             {
@@ -84,7 +84,8 @@ namespace EGM.Core.Services
                 _logger.Log(LogTypeEnum.Error, "[Hardware] Bill Validator Timeout! No ACK received.");
 
                 // CRITICAL: Transition to MAINTENANCE
-                _stateManager.ForceState(EGMStateEnum.MAINTENANCE, "Bill Validator Hardware Failure");
+                if(_stateManager.CurrentState != EGMStateEnum.MAINTENANCE)
+                    _stateManager.ForceState(EGMStateEnum.MAINTENANCE, "Bill Validator Hardware Failure");
             }
         }
 

@@ -23,53 +23,62 @@ namespace EGM.Core.Services
 
         public void InstallPackage(string packagePath)
         {
-            _logger.Log(LogTypeEnum.Info, $"[Update] Starting install: {packagePath}");
-
-            if (!_state.TransitionTo(EGMStateEnum.UPDATING, "User initiated update"))
+            if (string.IsNullOrWhiteSpace(packagePath))
             {
-                _logger.Log(LogTypeEnum.Warning, "[Update] System must be IDLE.");
+                _logger.Log(LogTypeEnum.Warning, "[Update] Package path cannot be empty.");
                 return;
             }
 
-            Version previousVersion = _config.GetConfig().CurrentVersion;
-            if (!_packageValidator.TryValidateAndExtractVersion(packagePath, previousVersion, out Version newVersion, out string erroMessage))
+            _logger.Log(LogTypeEnum.Info, $"[Update] Starting installation for: {packagePath}");
+
+            // Ensure system is in IDLE before updating
+            if (!_state.TransitionTo(EGMStateEnum.UPDATING, "User initiated update"))
             {
-                _logger.Log(LogTypeEnum.Error, $"[Update] Package validation failed: {erroMessage}");
-                _state.TransitionTo(EGMStateEnum.IDLE, "Validation failed");
+                _logger.Log(LogTypeEnum.Warning, "[Update] System must be in IDLE state to install updates.");
+                return;
             }
-            else
+
+            var currentConfig = _config.GetConfig();
+            Version previousVersion = currentConfig.CurrentVersion;
+
+            
+            if (!_packageValidator.TryValidateAndExtractVersion( packagePath, previousVersion, out Version newVersion,  out string errorMessage))
             {
-                try
+                _logger.Log(LogTypeEnum.Error, $"[Update] Validation failed: {errorMessage}");
+                _state.TransitionTo(EGMStateEnum.IDLE, "Update validation failed");
+                return; 
+            }
+
+            try
+            {
+                _logger.Log(LogTypeEnum.Info, $"[Update] Package validated. Target version: {newVersion}");
+
+                RunPreInstallHook(packagePath);
+
+                // Commit update
+                _config.UpdateConfig(cfg =>
                 {
+                    cfg.LastKnownGoodVersion = previousVersion;
+                    cfg.CurrentVersion = newVersion;
+                });
 
-                    _logger.Log(LogTypeEnum.Info, $"[Update] Valid package. Target version: {newVersion}");
+                // Record success
+                _history.RecordInstall(previousVersion, newVersion);
 
-                    RunPreInstallHook(packagePath);
+                _logger.Log(LogTypeEnum.Info, $"[Update] Installation successful. Active version: {newVersion}");
 
-                    // Commit update
-                    _config.UpdateConfig(c =>
-                    {
-                        c.LastKnownGoodVersion = previousVersion;
-                        c.CurrentVersion = newVersion;
-                    });
+                _state.TransitionTo(EGMStateEnum.IDLE, "Update completed successfully");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogTypeEnum.Error, $"[Update] Installation failed: {ex.Message}");
 
-                    // Record history separately
-                    _history.RecordInstall(previousVersion, newVersion);
+                PerformRollback(previousVersion);
 
-                    _logger.Log(LogTypeEnum.Info, $"[Update] Success. Version updated to {newVersion}");
-
-                    _state.TransitionTo(EGMStateEnum.IDLE, "Update complete");
-                }
-                catch (Exception ex)
-                {
-                    _logger.Log(LogTypeEnum.Error, $"[Update] Install failed: {ex.Message}");
-
-                    PerformRollback(previousVersion);
-
-                    _state.TransitionTo(EGMStateEnum.IDLE, "Rollback complete");
-                }
+                _state.TransitionTo(EGMStateEnum.IDLE, "Rollback completed");
             }
         }
+
 
 
         private void RunPreInstallHook(string packagePath)

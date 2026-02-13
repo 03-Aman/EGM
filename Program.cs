@@ -96,7 +96,7 @@ logger.Log(LogTypeEnum.Info, "EGM Core Module Ready. Type 'help' for commands.")
 
                 case "update-package":
                     if (parts.Length > 1) updateManager.InstallPackage(parts[1].Trim('"'));
-                    else logger.Log(LogTypeEnum.Warning, "Usage: update-package <filename>");
+                    else logger.Log(LogTypeEnum.Warning, "Usage: update-package <update_pkg_x.y.z>");
                     break;
 
                 case "device":

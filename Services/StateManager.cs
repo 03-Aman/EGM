@@ -63,11 +63,8 @@ namespace EGM.Core.Services
 
             _logger.Log(LogTypeEnum.Info, $"State Changed: {oldState} -> {newState} | Reason: {reason}");
 
-            // Notify subscribers (like the Game Loop or Hardware Monitor)
             OnStateChanged?.Invoke(newState);
         }
-
-        // Centralized logic for allowable moves
         private static bool IsValidTransition(EGMStateEnum current, EGMStateEnum next)
         {
            // MAINTENANCE/ERROR can come from ANYWHERE (Safety First) 

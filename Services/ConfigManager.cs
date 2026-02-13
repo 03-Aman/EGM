@@ -25,7 +25,17 @@ namespace EGM.Core.Services
             LoadConfig();
         }
 
-        public SystemConfig GetConfig() => _config;
+        public SystemConfig GetConfig()
+        {
+            lock (_lock)
+                return new SystemConfig
+                {
+                    CurrentVersion = _config.CurrentVersion,
+                    LastKnownGoodVersion = _config.LastKnownGoodVersion,
+                    TimeZone = _config.TimeZone,
+                    NtpEnabled = _config.NtpEnabled
+                };
+        }
 
         public void UpdateConfig(Action<SystemConfig> updateAction)
         {
